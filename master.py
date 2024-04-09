@@ -16,7 +16,7 @@ def main():
     num_processes = 20
 
     # 需要运行的程序路径
-    program_path = "python worker --lt auto --id "
+    program_path = "worker.exe --lt auto --id "
 
     # 启动初始进程
     processes = start_processes(num_processes, program_path)
