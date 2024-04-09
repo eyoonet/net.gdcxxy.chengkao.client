@@ -6,6 +6,7 @@ from typing import Dict, Any, Optional, Callable, List
 from urllib.parse import urlencode
 
 import httpx
+from httpcore import ConnectError
 from httpx import ReadTimeout, ConnectTimeout
 from playwright.async_api import BrowserContext, Page, async_playwright
 
@@ -61,6 +62,10 @@ class Client(AbstractApiClient):
                     await asyncio.sleep(1)
                     utils.logger.info(
                         f"[Crawler.ConnectTimeout] re req {url} number {i}")
+                except ConnectError as ex:
+                    await asyncio.sleep(1)
+                    utils.logger.info(
+                        f"[Crawler.ConnectError] re req {url} number {i}")
         data: str = response.text
         return data
 
