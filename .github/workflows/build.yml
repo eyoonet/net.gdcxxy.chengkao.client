@@ -25,7 +25,11 @@ jobs:
         poetry install
 
     - name: Build executable
-      run: poetry run pyinstaller --onefile worker.py
+      shell: pwsh
+      run: |
+        $env:PLAYWRIGHT_BROWSERS_PATH="0"
+        playwright install chromium
+        pyinstaller -F worker.py
       # 根据您的项目，这里可以是任何构建命令
 
     - name: Create Release
