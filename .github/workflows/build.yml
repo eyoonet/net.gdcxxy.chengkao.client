@@ -46,6 +46,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/worker.exe # 替换为您的可执行文件路径
-        asset_name: worker.exe
+        asset_path: ./dist/worker # 替换为您的可执行文件路径
+        asset_name: worker
         asset_content_type: application/octet-stream
