@@ -46,6 +46,7 @@ class Client(AbstractApiClient):
 
     async def request(self, method, url, **kwargs) -> Any:
         async with httpx.AsyncClient(proxies=self.proxies) as client:
+            error = True
             # 错误补发
             for i in range(3):
                 try:
@@ -53,19 +54,22 @@ class Client(AbstractApiClient):
                         method, url, timeout=self.timeout,
                         **kwargs
                     )
+                    error = False
                     break
                 except ReadTimeout as ex:
                     await asyncio.sleep(1)
-                    utils.logger.info(
+                    utils.logger.error(
                         f"[Crawler.ReadTimeout] re req {url} number {i}")
                 except ConnectTimeout as ex:
                     await asyncio.sleep(1)
-                    utils.logger.info(
+                    utils.logger.error(
                         f"[Crawler.ConnectTimeout] re req {url} number {i}")
                 except ConnectError as ex:
                     await asyncio.sleep(1)
-                    utils.logger.info(
+                    utils.logger.error(
                         f"[Crawler.ConnectError] re req {url} number {i}")
+            if error:
+                raise DataFetchError
         data: str = response.text
         return data
 

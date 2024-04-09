@@ -21,6 +21,6 @@ class PasswordException(ValueError):
 class FaceCollectionException(ValueError):
     pass
 
+
 class VerifyException(ValueError):
     pass
-
