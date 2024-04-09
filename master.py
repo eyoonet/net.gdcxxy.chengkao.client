@@ -26,7 +26,7 @@ def main():
         for idx, p in enumerate(processes):
             if p.poll() is not None:  # 检查进程是否已经退出
                 print(f"进程 {idx} 已退出，重新启动")
-                processes[idx] = subprocess.Popen(program_path)
+                processes[idx] = subprocess.Popen(program_path + str(idx))
                 break
         time.sleep(1)  # 每秒检查一次进程状态
 
