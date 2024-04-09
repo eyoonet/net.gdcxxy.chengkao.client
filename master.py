@@ -1,19 +1,12 @@
 import subprocess
 import time
 
-import httpx
 
-
-async def get_user_info():
-    async with httpx.AsyncClient() as client:
-        response = await client.request("get", "api/cx/student/info", timeout=3000)
-
-
-def start_processes(num_processes, program_path):
+def start_processes(num_processes, program_path: str):
     """启动指定数量的程序"""
     processes = []
-    for _ in range(num_processes):
-        process = subprocess.Popen(program_path)
+    for i in range(num_processes):
+        process = subprocess.Popen(program_path + str(i))
         processes.append(process)
     return processes
 
@@ -23,7 +16,7 @@ def main():
     num_processes = 20
 
     # 需要运行的程序路径
-    program_path = "path/to/your/program.exe"
+    program_path = "python worker --lt auto --id "
 
     # 启动初始进程
     processes = start_processes(num_processes, program_path)

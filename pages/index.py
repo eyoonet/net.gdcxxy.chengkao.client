@@ -2,8 +2,7 @@ import asyncio
 import os
 from typing import Optional, Dict, Tuple, List
 
-from httpx import ReadTimeout, ConnectTimeout
-from playwright.async_api import BrowserType, BrowserContext, Page, async_playwright
+from playwright.async_api import BrowserType, BrowserContext, Page, async_playwright, Browser
 
 import config
 from base.base_crawler import AbstractCrawler
@@ -46,6 +45,7 @@ class Index(AbstractCrawler):
     account: list
     context_page: Page
     client: Client
+    browser: Browser
     browser_context: BrowserContext
 
     def __init__(self) -> None:
@@ -77,8 +77,8 @@ class Index(AbstractCrawler):
             )
             return browser_context
         else:
-            browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
-            browser_context = await browser.new_context(
+            self.browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
+            browser_context = await self.browser.new_context(
                 viewport={"width": 1920, "height": 1080},
                 user_agent=user_agent
             )
@@ -127,6 +127,9 @@ class Index(AbstractCrawler):
                 try:
                     await login_obj.begin()
                     await self.client.update_cookies(browser_context=self.browser_context)
+                    await self.browser_context.close()
+                    await self.browser.close()
+
                     is_success = await self.get_specified_videos()
                     if is_success:
                         await store.set_user_finish(username)

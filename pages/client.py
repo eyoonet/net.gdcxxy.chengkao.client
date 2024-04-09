@@ -6,8 +6,7 @@ from typing import Dict, Any, Optional, Callable, List
 from urllib.parse import urlencode
 
 import httpx
-from httpcore import ConnectError
-from httpx import ReadTimeout, ConnectTimeout
+from httpx import ReadTimeout, ConnectTimeout, ConnectError
 from playwright.async_api import BrowserContext, Page, async_playwright
 
 from base.base_crawler import AbstractApiClient
@@ -30,7 +29,7 @@ def get_id(text):
 class Client(AbstractApiClient):
     def __init__(
             self,
-            timeout=10,
+            timeout=20,
             proxies=None,
             *,
             headers: Dict[str, str],
@@ -69,7 +68,7 @@ class Client(AbstractApiClient):
                     utils.logger.error(
                         f"[Crawler.ConnectError] re req {url} number {i}")
             if error:
-                raise DataFetchError
+                raise DataFetchError("Request Timeout")
         data: str = response.text
         return data
 
@@ -176,6 +175,9 @@ class Client(AbstractApiClient):
         utils.logger.info(f"[Client.get_video_info] Begin Id is {id}")
         url = f"/gdcx/{id}"
         body = await self.get(url)
+        if "1、为保证学习效果" not in body:
+            raise DataFetchError(id)
+
         el = BeautifulSoup(body, 'html.parser')
         s = el.select_one(".si-control-play +div +div").get_text()
         match = re.search(r'/(\d{2}:\d{2}:\d{2})', s)
@@ -191,7 +193,6 @@ class Client(AbstractApiClient):
         video_id = el.select_one("#jjwikiid").attrs['value']
         user_log_id = el.select_one("#userlog_id").attrs['value']
         finish = el.select_one("#is_xuewan").attrs['value']
-
 
         return {
             "max_time": max_time,

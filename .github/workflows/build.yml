@@ -30,7 +30,14 @@ jobs:
       run: |
         poetry run playwright install chromium
         poetry run pyinstaller -F worker.py
+        poetry run pyinstaller -F master.py
       # 根据您的项目，这里可以是任何构建命令
+
+    - name: Package
+      shell: pwsh
+      run: |
+        7z a -mx9 dist.7z dist
+        7z rn dist.7z dist release
 
     - name: Create Release
       id: create_release
