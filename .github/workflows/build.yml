@@ -28,8 +28,7 @@ jobs:
       env:
         PLAYWRIGHT_BROWSERS_PATH: 0
       run: |
-        .\$(poetry env info --path)\Scripts\Activate.ps1
-        python -m playwright install chromium
+        poetry run python -m playwright install chromium
         pyinstaller -F worker.py
       # 根据您的项目，这里可以是任何构建命令
 
