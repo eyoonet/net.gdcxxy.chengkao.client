@@ -8,12 +8,13 @@ def start_processes(num_processes, program_path: str):
     for i in range(num_processes):
         process = subprocess.Popen(program_path + str(i))
         processes.append(process)
+        time.sleep(15)
     return processes
 
 
 def main():
     # 同时运行的进程数量
-    num_processes = 20
+    num_processes = 50
 
     # 需要运行的程序路径
     program_path = "worker.exe --lt auto --id "
